@@ -194,4 +194,211 @@ export default function LegsPage() {
                 <Button variant="outline" className="gap-2">
                   <Filter className="h-4 w-4" />
                   Status {statusFilter.length > 0 && `(${statusFilter.length})`}
-                  <ChevronDown className="
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuCheckboxItem
+                  checked={statusFilter.includes("APPROVED")}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setStatusFilter([...statusFilter, "APPROVED"]);
+                    } else {
+                      setStatusFilter(statusFilter.filter((s) => s !== "APPROVED"));
+                    }
+                  }}
+                >
+                  ✅ Approved
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={statusFilter.includes("CAUTION")}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setStatusFilter([...statusFilter, "CAUTION"]);
+                    } else {
+                      setStatusFilter(statusFilter.filter((s) => s !== "CAUTION"));
+                    }
+                  }}
+                >
+                  ⚠️ Caution
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={statusFilter.includes("REJECTED")}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setStatusFilter([...statusFilter, "REJECTED"]);
+                    } else {
+                      setStatusFilter(statusFilter.filter((s) => s !== "REJECTED"));
+                    }
+                  }}
+                >
+                  ❌ Rejected
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <Filter className="h-4 w-4" />
+                  Confidence {confidenceFilter.length > 0 && `(${confidenceFilter.length})`}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuCheckboxItem
+                  checked={confidenceFilter.includes("HIGH")}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setConfidenceFilter([...confidenceFilter, "HIGH"]);
+                    } else {
+                      setConfidenceFilter(confidenceFilter.filter((c) => c !== "HIGH"));
+                    }
+                  }}
+                >
+                  HIGH
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={confidenceFilter.includes("MEDIUM")}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setConfidenceFilter([...confidenceFilter, "MEDIUM"]);
+                    } else {
+                      setConfidenceFilter(confidenceFilter.filter((c) => c !== "MEDIUM"));
+                    }
+                  }}
+                >
+                  MEDIUM
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={confidenceFilter.includes("LOW")}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setConfidenceFilter([...confidenceFilter, "LOW"]);
+                    } else {
+                      setConfidenceFilter(confidenceFilter.filter((c) => c !== "LOW"));
+                    }
+                  }}
+                >
+                  LOW
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <Filter className="h-4 w-4" />
+                  League {leagueFilter.length > 0 && `(${leagueFilter.length})`}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 max-h-96 overflow-y-auto">
+                {leagues.map((league) => (
+                  <DropdownMenuCheckboxItem
+                    key={league}
+                    checked={leagueFilter.includes(league)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setLeagueFilter([...leagueFilter, league]);
+                      } else {
+                        setLeagueFilter(leagueFilter.filter((l) => l !== league));
+                      }
+                    }}
+                  >
+                    {league}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Button variant="ghost" onClick={() => {
+              setSearchTerm("");
+              setStatusFilter([]);
+              setConfidenceFilter([]);
+              setLeagueFilter([]);
+            }}>
+              Clear
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Legs Table */}
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-b border-border">
+                <TableHead className="w-[180px]">Match</TableHead>
+                <TableHead className="w-[100px]">League</TableHead>
+                <TableHead className="w-[140px]">Kickoff</TableHead>
+                <TableHead className="w-[80px]">H</TableHead>
+                <TableHead className="w-[80px]">D</TableHead>
+                <TableHead className="w-[80px]">A</TableHead>
+                <TableHead className="w-[120px]">Selection</TableHead>
+                <TableHead className="w-[60px]">Prob</TableHead>
+                <TableHead className="w-[60px]">Edge</TableHead>
+                <TableHead className="w-[100px]">Status</TableHead>
+                <TableHead className="w-[80px]">Conf</TableHead>
+                <TableHead className="w-[50px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredLegs.map((leg) => (
+                <TableRow
+                  key={leg.legId}
+                  className="cursor-pointer hover:bg-secondary/50 transition-colors"
+                  onClick={() => handleLegClick(leg)}
+                >
+                  <TableCell className="font-medium">
+                    <div>{leg.homeTeam}</div>
+                    <div className="text-sm text-muted-foreground">vs</div>
+                    <div>{leg.awayTeam}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div>{leg.league}</div>
+                    <div className="text-xs text-muted-foreground">Tier {leg.leagueTier}</div>
+                  </TableCell>
+                  <TableCell className="text-sm">{formatKickoff(leg.kickoff)}</TableCell>
+                  <TableCell className="font-mono">{leg.homeOdds.toFixed(2)}</TableCell>
+                  <TableCell className="font-mono">{leg.drawOdds.toFixed(2)}</TableCell>
+                  <TableCell className="font-mono">{leg.awayOdds.toFixed(2)}</TableCell>
+                  <TableCell>
+                    <div className="font-medium">{leg.selection}</div>
+                    <div className="text-xs text-muted-foreground">@{leg.selectionOdds.toFixed(2)}</div>
+                  </TableCell>
+                  <TableCell>{(leg.modelProb * 100).toFixed(0)}%</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      {getEdgeIcon(leg.edge)}
+                      <span className={leg.edge > 0 ? "text-green-500" : "text-red-500"}>
+                        {(leg.edge * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{getStatusBadge(leg.status)}</TableCell>
+                  <TableCell>{getConfidenceBadge(leg.confidence)}</TableCell>
+                  <TableCell>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Forensic Modal */}
+      {selectedLeg && (
+        <ForensicModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          leg={selectedLeg}
+        />
+      )}
+    </div>
+  );
+}
