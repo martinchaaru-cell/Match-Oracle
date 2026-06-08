@@ -221,4 +221,306 @@ export function ForensicModal({ isOpen, onClose, leg }: ForensicModalProps) {
                     </h4>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="
+                        <span className="text-muted-foreground">Personnel Score:</span>
+                        <span className="font-mono">{report.m6.awayScore}/100</span>
+                      </div>
+                      {report.m6.awayKeyPlayersMissing.length > 0 && (
+                        <div>
+                          <span className="text-muted-foreground text-sm">Key Players Missing:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {report.m6.awayKeyPlayersMissing.map((p) => (
+                              <Badge key={p} variant="destructive" className="text-xs">{p}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div>
+                        <span className="text-muted-foreground text-sm">Fatigue:</span>
+                        <Badge variant="warning" className="ml-2">{report.m6.awayFatigue}</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* M7 AI Consensus */}
+              <TabsContent value="m7" className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Brain className="h-5 w-5" />
+                    Multi-AI Consensus
+                  </h3>
+                  <Badge variant="default">{report.m7.consensus}</Badge>
+                </div>
+                <div className="grid grid-cols-4 gap-4">
+                  {Object.entries(report.m7.narratives).map(([provider, narrative]) => (
+                    <div key={provider} className="p-3 rounded-lg bg-secondary/30">
+                      <div className="font-medium mb-2">{provider}</div>
+                      <p className="text-sm text-muted-foreground">{narrative.substring(0, 100)}...</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4">
+                  <span className="text-muted-foreground">Agreement Level:</span>
+                  <div className="mt-1 h-2 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full" style={{ width: `${report.m7.agreement * 100}%` }} />
+                  </div>
+                  <div className="text-right text-sm mt-1">{(report.m7.agreement * 100).toFixed(0)}%</div>
+                </div>
+              </TabsContent>
+
+              {/* M8 Dual Pattern */}
+              <TabsContent value="m8" className="space-y-4">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Dual Risk Level:</span>
+                      <Badge variant={
+                        report.m8.dualRiskLevel === "LOW" ? "default" :
+                        report.m8.dualRiskLevel === "MEDIUM" ? "warning" : "destructive"
+                      }>
+                        {report.m8.dualRiskLevel}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Underdog Threat:</span>
+                      <span>{report.m8.underdogThreat}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Pattern Clash Score:</span>
+                      <span className="font-mono">{report.m8.patternClashScore.toFixed(3)}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Resilience Gap:</span>
+                      <span className={report.m8.resilienceGap > 0 ? "text-green-500" : "text-red-500"}>
+                        {report.m8.resilienceGap > 0 ? "+" : ""}{report.m8.resilienceGap.toFixed(3)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Patterns Reliable:</span>
+                      <Badge variant={report.m8.patternsReliable ? "default" : "destructive"}>
+                        {report.m8.patternsReliable ? "YES" : "NO"}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* M9 Underdog Scanner */}
+              <TabsContent value="m9" className="space-y-4">
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-3xl font-bold text-center mb-4">
+                      {(report.m9.underdogEdge * 100).toFixed(1)}%
+                    </div>
+                    <div className="text-center text-muted-foreground">Underdog Edge</div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Threat Level:</span>
+                      <Badge variant={
+                        report.m9.threatLevel === "NONE" ? "default" :
+                        report.m9.threatLevel === "LOW" ? "secondary" :
+                        report.m9.threatLevel === "MEDIUM" ? "warning" : "destructive"
+                      }>
+                        {report.m9.threatLevel}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Pattern Score:</span>
+                      <span className="font-mono">{report.m9.patternScore.toFixed(0)}/100</span>
+                    </div>
+                    {report.m9.goldmineQualified && (
+                      <Badge className="w-full justify-center bg-yellow-600">🏆 GOLDMINE OPPORTUNITY</Badge>
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* M10 Tally Matrix */}
+              <TabsContent value="m10" className="space-y-4">
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Activity className="h-5 w-5" />
+                      <span className="font-medium">Matrix Useful:</span>
+                      <Badge variant={report.m10.matrixUseful ? "default" : "destructive"}>
+                        {report.m10.matrixUseful ? "YES" : "NO"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Trophy className="h-5 w-5" />
+                      <span className="font-medium">Bilateral Prediction:</span>
+                      <span>{report.m10.bilateralPrediction}</span>
+                      <Badge variant="secondary">{report.m10.bilateralConfidence}</Badge>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      <span className="font-medium">Signal:</span>
+                      <Badge variant={
+                        report.m10.trapValueSignal === "VALUE" ? "default" :
+                        report.m10.trapValueSignal === "TRAP" ? "destructive" : "secondary"
+                      }>
+                        {report.m10.trapValueSignal}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* M26 Match Context */}
+              <TabsContent value="m26" className="space-y-4">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Match Importance:</span>
+                      <span className="font-mono">{(report.m26.matchImportance * 100).toFixed(0)}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Context Label:</span>
+                      <Badge variant="secondary">{report.m26.contextLabel}</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Is Rivalry:</span>
+                      <Badge variant={report.m26.isRivalry ? "default" : "secondary"}>
+                        {report.m26.isRivalry ? "YES" : "NO"}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Home Motivation:</span>
+                      <Badge variant={
+                        report.m26.homeMotivation === "DESPERATE" ? "destructive" :
+                        report.m26.homeMotivation === "HIGH" ? "default" :
+                        report.m26.homeMotivation === "NORMAL" ? "secondary" : "warning"
+                      }>
+                        {report.m26.homeMotivation}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Away Motivation:</span>
+                      <Badge variant={
+                        report.m26.awayMotivation === "DESPERATE" ? "destructive" :
+                        report.m26.awayMotivation === "HIGH" ? "default" :
+                        report.m26.awayMotivation === "NORMAL" ? "secondary" : "warning"
+                      }>
+                        {report.m26.awayMotivation}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* M27 H2H Deep Analysis */}
+              <TabsContent value="m27" className="space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Head-to-Head History</h3>
+                  <Badge variant="default">{report.m27.h2hLabel}</Badge>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center mb-6">
+                  <div className="p-4 bg-secondary/30 rounded-lg">
+                    <div className="text-2xl font-bold text-green-500">{report.m27.favWins}</div>
+                    <div className="text-sm text-muted-foreground">Favourite Wins</div>
+                  </div>
+                  <div className="p-4 bg-secondary/30 rounded-lg">
+                    <div className="text-2xl font-bold text-yellow-500">{report.m27.draws}</div>
+                    <div className="text-sm text-muted-foreground">Draws</div>
+                  </div>
+                  <div className="p-4 bg-secondary/30 rounded-lg">
+                    <div className="text-2xl font-bold text-red-500">{report.m27.undWins}</div>
+                    <div className="text-sm text-muted-foreground">Underdog Wins</div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Games Analyzed:</span>
+                    <span>{report.m27.gamesPlayed}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Draw Rate:</span>
+                    <span>{(report.m27.drawRate * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Psychological Block:</span>
+                    <Badge variant={report.m27.psychologicalBlock ? "destructive" : "secondary"}>
+                      {report.m27.psychologicalBlock ? "DETECTED" : "NONE"}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Draw Boost Factor:</span>
+                    <span className="font-mono">{report.m27.drawBoostFactor.toFixed(2)}x</span>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Summary Tab */}
+              <TabsContent value="summary" className="space-y-6">
+                <div className={`p-6 rounded-lg ${
+                  report.finalStatus === "APPROVED" ? "bg-green-500/10 border border-green-500/20" :
+                  report.finalStatus === "REJECTED" ? "bg-red-500/10 border border-red-500/20" :
+                  "bg-yellow-500/10 border border-yellow-500/20"
+                }`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-bold">Final Verdict</h3>
+                    <Badge variant={
+                      report.finalStatus === "APPROVED" ? "default" :
+                      report.finalStatus === "REJECTED" ? "destructive" : "warning"
+                    }>
+                      {report.finalStatus}
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <div className="text-3xl font-bold mb-2">{(report.weightedScore * 100).toFixed(0)}%</div>
+                      <div className="text-muted-foreground">Weighted Score</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold mb-2">{report.finalConfidence}</div>
+                      <div className="text-muted-foreground">Confidence</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    Risk Flags
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {report.riskFlags.map((flag) => (
+                      <Badge key={flag} variant="warning">{flag}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-secondary/30 rounded-lg">
+                    <div className="text-2xl font-bold text-green-500">{leg.homeTeam}</div>
+                    <div className="text-sm text-muted-foreground">Selection @ {leg.selectionOdds.toFixed(2)}</div>
+                  </div>
+                  <div className="text-center p-4 bg-secondary/30 rounded-lg">
+                    <div className="text-2xl font-bold">{(leg.modelProb * 100).toFixed(0)}%</div>
+                    <div className="text-sm text-muted-foreground">Win Probability</div>
+                  </div>
+                  <div className="text-center p-4 bg-secondary/30 rounded-lg">
+                    <div className="text-2xl font-bold text-green-500">+{(leg.edge * 100).toFixed(1)}%</div>
+                    <div className="text-sm text-muted-foreground">Edge</div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          ) : (
+            <div className="text-center text-muted-foreground p-8">
+              Failed to load forensic report
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
