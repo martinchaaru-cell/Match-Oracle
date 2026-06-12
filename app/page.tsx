@@ -79,8 +79,10 @@ export default function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const response = await api.getDashboard();
-      setData(response);
+      const response = await api.getDashboard<DashboardData>();
+      if (response && typeof response === "object") {
+        setData(response as DashboardData);
+      }
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
       toast.error("Failed to load dashboard data");
