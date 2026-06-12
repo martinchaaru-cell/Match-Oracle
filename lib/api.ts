@@ -22,14 +22,8 @@ class ApiClient {
   }
 
   // Dashboard
-  async getDashboard<T = unknown>(defaultValue?: T): Promise<T | unknown> {
-    try {
-      const response = await this.request("/frontend/dashboard");
-      return response as T;
-    } catch (error) {
-      console.error("Failed to fetch dashboard:", error);
-      return defaultValue || {};
-    }
+  async getDashboard<T = unknown>(): Promise<T> {
+    return this.request<T>("/frontend/dashboard");
   }
 
   // Legs
