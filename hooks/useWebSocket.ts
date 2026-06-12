@@ -1,31 +1,32 @@
 // hooks/useWebSocket.ts
-import { useEffect, useState, useCallback, useRef } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 
 interface WebSocketMessage {
   type: string;
-  data: any;
+  data?: any;
 }
 
 export function useWebSocket(url: string) {
   const [isConnected, setIsConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const connect = useCallback(() => {
+  useEffect(() => {
+    // Only establish WebSocket connection in browser environment
+    if (typeof window === "undefined") return;
+
     try {
       const ws = new WebSocket(url);
-      
+
       ws.onopen = () => {
-        console.log("WebSocket connected");
         setIsConnected(true);
-        wsRef.current = ws;
       };
 
       ws.onmessage = (event) => {
         try {
-          const data = JSON.parse(event.data);
-          setLastMessage(data);
+          const message = JSON.parse(event.data) as WebSocketMessage;
+          setLastMessage(message);
         } catch (error) {
           console.error("Failed to parse WebSocket message:", error);
         }
@@ -33,47 +34,23 @@ export function useWebSocket(url: string) {
 
       ws.onerror = (error) => {
         console.error("WebSocket error:", error);
+        setIsConnected(false);
       };
 
       ws.onclose = () => {
-        console.log("WebSocket disconnected");
         setIsConnected(false);
-        
-        // Attempt to reconnect after 3 seconds
-        reconnectTimeoutRef.current = setTimeout(() => {
-          connect();
-        }, 3000);
+      };
+
+      return () => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        }
       };
     } catch (error) {
-      console.error("Failed to create WebSocket:", error);
-      reconnectTimeoutRef.current = setTimeout(() => {
-        connect();
-      }, 5000);
+      console.error("Failed to initialize WebSocket:", error);
+      setIsConnected(false);
     }
   }, [url]);
 
-  useEffect(() => {
-    connect();
-    
-    return () => {
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, [connect]);
-
-  const sendMessage = useCallback((message: any) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(message));
-    }
-  }, []);
-
-  return {
-    isConnected,
-    lastMessage,
-    sendMessage,
-  };
+  return { isConnected, lastMessage };
 }
